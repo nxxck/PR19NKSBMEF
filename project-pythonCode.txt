@@ -1,0 +1,48 @@
+﻿from csv import DictReader
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sbn
+
+gt = pd.read_csv('gtd.csv', encoding='ISO-8859-1')
+gt.rename(columns={'iyear':'Year','imonth':'Month','iday':'Day',
+                     'country_txt':'Country','region_txt':'Region',
+                     'attacktype1_txt':'AtkType','target1':'Target',
+                     'gname':'Group','targtype1_txt':'TargType',
+                     'weaptype1_txt':'WpnType','motive':'Motive'},inplace=True)
+
+gt = gt[['Year', 'Month', 'Day', 'Country', 'Region', 'AtkType', 'Target', 'Group', 'TargType', 'WpnType', 'Motive']]
+
+#first plot
+
+plt.subplots(figsize=(20,8))
+sbn.countplot('Year', data=gt, palette=sbn.cubehelix_palette(47, start=.8, rot=-.4),
+                edgecolor=sbn.cubehelix_palette(47, start=.8, rot=-.4))
+plt.xticks(rotation=90)
+plt.xticks(fontsize=15)
+plt.yticks(fontsize=15)
+plt.ylabel('')
+plt.xlabel('Year', fontsize=15)
+plt.title('Število terorističnih napadov na leto')
+plt.show()
+
+#second plot
+
+pd.crosstab(gt.Year, gt.AtkType).plot.barh(stacked=True, width=.9, color=sbn.hls_palette(9))
+fig=plt.gcf()
+fig.set_size_inches(15,25)
+plt.show()
+
+#third plot
+
+fig1, ax = plt.subplots(figsize=(20,8))
+sbn.countplot('Region', data=gt, palette=sbn.cubehelix_palette(12, start=.5, rot=-.75),
+              edgecolor=sbn.cubehelix_palette(12, start=.5, rot=-.75),
+              order=gt['Region'].value_counts().index)
+plt.xticks(rotation=45)
+plt.xticks(fontsize=15)
+plt.yticks(fontsize=15)
+plt.xlabel('Region',fontsize=15)
+plt.ylabel('')
+plt.setp(ax.xaxis.get_majorticklabels(), ha='right')
+plt.title('Število terorističnih napadov po regijah',fontsize=15)
+plt.show()
